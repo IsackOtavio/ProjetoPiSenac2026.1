@@ -1,20 +1,49 @@
 const API = 'http://localhost:3000';
-
 const token = localStorage.getItem('token');
 if (!token) window.location.href = 'login.html';
 
 function sair() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('perfil');
-  localStorage.removeItem('email');
+  localStorage.clear();
   window.location.href = 'login.html';
+}
+
+function toast(msg, tipo = 'verde') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + tipo;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
 }
 
 function mostrarArquivo() {
   const arquivo = document.getElementById('arquivo-input').files[0];
-  document.getElementById('arquivo-nome').textContent = arquivo
-    ? '📄 ' + arquivo.name
-    : '';
+  document.getElementById('arquivo-nome').textContent = arquivo ? '📎 ' + arquivo.name : '';
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  document.getElementById('upload-area').classList.add('drag');
+}
+
+function dragLeave() {
+  document.getElementById('upload-area').classList.remove('drag');
+}
+
+function drop(e) {
+  e.preventDefault();
+  document.getElementById('upload-area').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const permitidos = ['application/pdf', 'image/jpeg', 'image/png'];
+  if (!permitidos.includes(file.type)) {
+    toast('Arquivo inválido. Use PDF, JPG ou PNG.', 'vermelho');
+    return;
+  }
+  const input = document.getElementById('arquivo-input');
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  mostrarArquivo();
 }
 
 async function enviarCertificado() {
@@ -44,26 +73,23 @@ async function enviarCertificado() {
   msg.textContent = 'Enviando...';
 
   try {
-    const resposta = await fetch(`${API}/certificados`, {
+    const res = await fetch(`${API}/certificados`, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token },
       body: formData
     });
 
-    if (resposta.status === 401) {
-      sair();
-      return;
-    }
+    if (res.status === 401) { sair(); return; }
 
-    const dados = await resposta.json();
+    const dados = await res.json();
 
-    if (resposta.ok) {
+    if (res.ok) {
       msg.style.color = '#4caf7d';
       msg.textContent = '✓ Certificado enviado com sucesso!';
-
-      document.getElementById('nome').value = '';
+      toast('✓ Certificado enviado!', 'verde');
+      document.getElementById('nome').value      = '';
       document.getElementById('categoria').value = '';
-      document.getElementById('horas').value = '';
+      document.getElementById('horas').value     = '';
       document.getElementById('descricao').value = '';
       document.getElementById('arquivo-input').value = '';
       document.getElementById('arquivo-nome').textContent = '';

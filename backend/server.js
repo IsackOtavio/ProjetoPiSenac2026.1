@@ -20,6 +20,7 @@ const storage = multer.diskStorage({
     cb(null, unique + ext);
   }
 });
+
 const upload = multer({
   storage,
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -32,10 +33,11 @@ const upload = multer({
 });
 
 const usuarios = [
-  { id: 1, nome: 'Admin',        email: 'admin@senac.br',        senha: 'admin123',  perfil: 'admin'       },
-  { id: 2, nome: 'Coordenador',  email: 'coordenador@senac.br',  senha: 'coord123',  perfil: 'coordenador' },
-  { id: 3, nome: 'Aluno Teste',  email: 'aluno@senac.br',        senha: 'senac123',  perfil: 'aluno'       }
+  { id: 1, nome: 'Admin',        email: 'admin@senac.br',       senha: 'admin123', perfil: 'admin'       },
+  { id: 2, nome: 'Coordenador',  email: 'coordenador@senac.br', senha: 'coord123', perfil: 'coordenador' },
+  { id: 3, nome: 'Aluno Teste',  email: 'aluno@senac.br',       senha: 'senac123', perfil: 'aluno'       }
 ];
+
 const certificados = [];
 let proximoIdUsuario = 4;
 let proximoIdCert    = 1;
@@ -69,7 +71,6 @@ function exigirPerfil(...perfis) {
   };
 }
 
-
 app.post('/login', (req, res) => {
   const { email, senha } = req.body;
   if (!email || !senha) return res.status(400).json({ erro: 'E-mail e senha obrigatórios.' });
@@ -83,7 +84,6 @@ app.get('/me', autenticar, (req, res) => {
   const { senha, ...dados } = req.usuario;
   res.json(dados);
 });
-
 
 app.post('/certificados', autenticar, exigirPerfil('aluno'), upload.single('arquivo'), (req, res) => {
   if (!req.file) return res.status(400).json({ erro: 'Arquivo obrigatório.' });
@@ -103,6 +103,7 @@ app.post('/certificados', autenticar, exigirPerfil('aluno'), upload.single('arqu
     arquivo:    req.file.filename,
     status:     'pendente',
     data:       new Date().toLocaleDateString('pt-BR'),
+    dataISO:    new Date().toISOString(),
     observacao: ''
   };
   certificados.push(cert);
@@ -114,6 +115,17 @@ app.get('/certificados', autenticar, (req, res) => {
     return res.json(certificados.filter(c => c.emailAluno === req.usuario.email));
   }
   res.json(certificados);
+});
+
+app.get('/certificados/:id/arquivo', autenticar, (req, res) => {
+  const cert = certificados.find(c => c.id === Number(req.params.id));
+  if (!cert) return res.status(404).json({ erro: 'Certificado não encontrado.' });
+  if (req.usuario.perfil === 'aluno' && cert.emailAluno !== req.usuario.email) {
+    return res.status(403).json({ erro: 'Acesso não autorizado.' });
+  }
+  const filePath = path.join(pastaUploads, cert.arquivo);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ erro: 'Arquivo não encontrado.' });
+  res.sendFile(filePath);
 });
 
 app.patch('/certificados/:id/status', autenticar, exigirPerfil('coordenador', 'admin'), (req, res) => {
@@ -128,6 +140,14 @@ app.patch('/certificados/:id/status', autenticar, exigirPerfil('coordenador', 'a
   res.json({ mensagem: 'Status atualizado.', certificado: cert });
 });
 
+app.get('/stats', autenticar, exigirPerfil('admin', 'coordenador'), (req, res) => {
+  const total     = certificados.length;
+  const aprovados = certificados.filter(c => c.status === 'aprovado').length;
+  const pendentes = certificados.filter(c => c.status === 'pendente').length;
+  const reprovados = certificados.filter(c => c.status === 'reprovado').length;
+  const totalHoras = certificados.filter(c => c.status === 'aprovado').reduce((s, c) => s + c.horas, 0);
+  res.json({ total, aprovados, pendentes, reprovados, totalHoras });
+});
 
 app.get('/usuarios', autenticar, exigirPerfil('admin'), (req, res) => {
   res.json(usuarios.map(({ senha, ...u }) => u));

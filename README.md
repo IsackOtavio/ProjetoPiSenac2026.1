@@ -1,39 +1,48 @@
 # SENAC PI 2026 — Sistema de Horas Complementares
 
-Sistema web para envio e validação de certificados de horas complementares dos cursos do SENAC.
+Sistema web PWA para envio e validação de certificados de horas complementares dos cursos do SENAC.
 
 ## Funcionalidades
 
-- **Aluno** — envia certificados (PDF/imagem), acompanha status (pendente, aprovado, reprovado)
-- **Coordenador** — visualiza todos os certificados e aprova ou reprova cada um
-- **Admin** — gerencia usuários (cadastrar coordenadores e alunos)
+- **Aluno** — envia certificados (PDF/imagem), acompanha status, filtra por situação, visualiza arquivos enviados
+- **Coordenador** — valida certificados com observação, visualiza arquivos, filtra por status
+- **Admin** — gerencia usuários (cadastrar/excluir), busca de usuários, acompanha totais do sistema
+- **Login com seletor de perfil** — aluno, coordenador ou administrador
+- **PWA** — instalável no celular/desktop, funciona offline (telas em cache)
+- **Toasts** — feedback visual em todas as ações
+- **Visualizador de arquivos** — PDF e imagens abrem em modal diretamente no painel
 
 ## Estrutura do Projeto
 
 ```
 /
 ├── backend/
-│   ├── server.js          # API REST (Express)
+│   ├── server.js
 │   ├── package.json
-│   ├── .env.example       # Variáveis de ambiente (copie para .env)
-│   └── uploads/           # Arquivos enviados (gerado automaticamente, não comitar)
+│   └── uploads/
 │
-├── frontend/
-│   ├── html/
-│   │   ├── login.html
-│   │   ├── certificados.html
-│   │   └── enviar.html
-│   ├── css/
-│   │   ├── login.css
-│   │   ├── certificados.css
-│   │   └── enviar.css
-│   └── js/
-│       ├── login.js
-│       ├── certificados.js
-│       └── enviar.js
-│
-├── .gitignore
-└── README.md
+└── frontend/
+    ├── html/
+    │   ├── login.html
+    │   ├── certificados.html
+    │   ├── enviar.html
+    │   ├── coordenador.html
+    │   └── admin.html
+    ├── css/
+    │   ├── global.css
+    │   ├── login.css
+    │   ├── certificados.css
+    │   ├── enviar.css
+    │   ├── coordenador.css
+    │   └── admin.css
+    ├── js/
+    │   ├── login.js
+    │   ├── certificados.js
+    │   ├── enviar.js
+    │   ├── coordenador.js
+    │   └── admin.js
+    ├── manifest.json
+    └── sw.js
 ```
 
 ## Como Rodar
@@ -43,7 +52,6 @@ Sistema web para envio e validação de certificados de horas complementares dos
 ```bash
 cd backend
 npm install
-cp .env.example .env   # configure as variáveis se quiser
 npm start
 ```
 
@@ -51,7 +59,7 @@ O servidor sobe em `http://localhost:3000`.
 
 ### Frontend
 
-Abra `frontend/html/login.html` diretamente no navegador **ou** sirva com uma extensão como o Live Server do VS Code.
+Abra `frontend/html/login.html` no navegador ou use o Live Server do VS Code.
 
 ## Usuários de Teste
 
@@ -63,23 +71,27 @@ Abra `frontend/html/login.html` diretamente no navegador **ou** sirva com uma ex
 
 ## Rotas da API
 
-| Método | Rota                        | Acesso              | Descrição                      |
-|--------|-----------------------------|---------------------|--------------------------------|
-| POST   | /login                      | Público             | Autenticar usuário             |
-| POST   | /certificados               | Autenticado         | Enviar certificado             |
-| GET    | /certificados               | Autenticado         | Listar certificados            |
-| PATCH  | /certificados/:id/status    | Coordenador / Admin | Aprovar ou reprovar            |
-| GET    | /usuarios                   | Admin               | Listar usuários                |
-| POST   | /usuarios                   | Admin               | Cadastrar usuário              |
+| Método | Rota                        | Acesso              | Descrição                        |
+|--------|-----------------------------|---------------------|----------------------------------|
+| POST   | /login                      | Público             | Autenticar usuário               |
+| GET    | /me                         | Autenticado         | Dados do usuário logado          |
+| POST   | /certificados               | Aluno               | Enviar certificado               |
+| GET    | /certificados               | Autenticado         | Listar certificados              |
+| GET    | /certificados/:id/arquivo   | Autenticado         | Visualizar arquivo do certificado|
+| PATCH  | /certificados/:id/status    | Coordenador / Admin | Aprovar ou reprovar              |
+| GET    | /stats                      | Coordenador / Admin | Estatísticas gerais              |
+| GET    | /usuarios                   | Admin               | Listar usuários                  |
+| POST   | /usuarios                   | Admin               | Cadastrar usuário                |
+| DELETE | /usuarios/:id               | Admin               | Excluir usuário                  |
 
 ## Tecnologias
 
-- **Frontend:** HTML, CSS, JavaScript (Vanilla)
+- **Frontend:** HTML, CSS, JavaScript (Vanilla), PWA (Service Worker + Manifest)
 - **Backend:** Node.js, Express, Multer
-- **Armazenamento:** Em memória (suficiente para demonstração do PI)
+- **Armazenamento:** Em memória (adequado para demonstração do PI)
 
 ## Observações
 
 - Os dados são armazenados em memória; reiniciar o servidor apaga os certificados enviados.
-- Para persistência real, integre um banco de dados (ex: SQLite, MySQL).
-- O token de autenticação é baseado em Base64 do e-mail — adequado para PI; em produção use JWT.
+- O token é baseado em Base64 do e-mail — adequado para PI; em produção use JWT + bcrypt.
+- O Service Worker faz cache das telas estáticas para uso offline.

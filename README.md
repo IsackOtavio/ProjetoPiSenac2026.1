@@ -1,97 +1,94 @@
-# SENAC PI 2026 — Sistema de Horas Complementares
+# ResumeAI — Assistente de Resumo com Inteligência Artificial
 
-Sistema web PWA para envio e validação de certificados de horas complementares dos cursos do SENAC.
+> MVP desenvolvido para a Entrega Final da Residência em Software & IA — Porto Digital 2026
 
-## Funcionalidades
+## 📌 Sobre o Projeto
 
-- **Aluno** — envia certificados (PDF/imagem), acompanha status, filtra por situação, visualiza arquivos enviados
-- **Coordenador** — valida certificados com observação, visualiza arquivos, filtra por status
-- **Admin** — gerencia usuários (cadastrar/excluir), busca de usuários, acompanha totais do sistema
-- **Login com seletor de perfil** — aluno, coordenador ou administrador
-- **PWA** — instalável no celular/desktop, funciona offline (telas em cache)
-- **Toasts** — feedback visual em todas as ações
-- **Visualizador de arquivos** — PDF e imagens abrem em modal diretamente no painel
+O **ResumeAI** é uma aplicação web que utiliza IA para resumir textos automaticamente. O usuário cola qualquer conteúdo textual, seleciona o estilo de resumo desejado e a IA retorna:
 
-## Estrutura do Projeto
+- Um resumo no estilo escolhido
+- O tema principal do texto
+- O tom detectado (jornalístico, técnico, acadêmico etc.)
+- Os pontos-chave extraídos
+
+## 🧠 Serviços de IA Utilizados
+
+| Serviço | Modelo | Uso |
+|---|---|---|
+| Groq API | LLaMA 3.3 70B Versatile | Geração de resumos e extração de metadados |
+
+## 🗂 Estrutura do Projeto
 
 ```
-/
-├── backend/
-│   ├── server.js
-│   ├── package.json
-│   └── uploads/
-│
-└── frontend/
-    ├── html/
-    │   ├── login.html
-    │   ├── certificados.html
-    │   ├── enviar.html
-    │   ├── coordenador.html
-    │   └── admin.html
-    ├── css/
-    │   ├── global.css
-    │   ├── login.css
-    │   ├── certificados.css
-    │   ├── enviar.css
-    │   ├── coordenador.css
-    │   └── admin.css
-    ├── js/
-    │   ├── login.js
-    │   ├── certificados.js
-    │   ├── enviar.js
-    │   ├── coordenador.js
-    │   └── admin.js
-    ├── manifest.json
-    └── sw.js
+resumo-ia/
+├── index.html               # Aplicação completa (frontend + lógica JS)
+├── README.md                # Este arquivo
+├── prompt-engineering.md    # Documentação de prompts e integrações de IA
+└── prompts-falharam.md      # Exemplos de prompts que falharam e ajustes
 ```
 
-## Como Rodar
+## ⚙️ Como Executar
 
-### Backend
+### Pré-requisitos
+
+- Navegador moderno (Chrome, Firefox, Edge, Safari)
+- Chave de API da Groq (gratuita em console.groq.com)
+
+### Passo 1 — Obter a chave de API
+
+1. Acesse [console.groq.com](https://console.groq.com)
+2. Faça login com sua conta Google
+3. Vá em **API Keys** e clique em **Create API Key**
+4. Copie a chave gerada (começa com `gsk_...`)
+
+### Passo 2 — Configurar a chave na aplicação
+
+Abra o arquivo `index.html` em um editor de texto e localize a linha:
+
+```javascript
+'Authorization': 'Bearer SUA_CHAVE_GROQ_AQUI'
+```
+
+Substitua `SUA_CHAVE_GROQ_AQUI` pela sua chave.
+
+> ⚠️ **Atenção:** Em produção, NUNCA exponha chaves de API no frontend. Utilize um backend intermediário para fazer as chamadas à API de forma segura.
+
+### Passo 3 — Executar
+
+Abra o arquivo `index.html` diretamente no navegador, ou sirva com qualquer servidor HTTP local:
 
 ```bash
-cd backend
-npm install
-npm start
+# Python
+python -m http.server 3000
+
+# Node.js
+npx serve .
 ```
 
-O servidor sobe em `http://localhost:3000`.
+Acesse: `http://localhost:3000`
 
-### Frontend
+## 🔐 Variáveis de Ambiente (para produção com backend)
 
-Abra `frontend/html/login.html` no navegador ou use o Live Server do VS Code.
+| Variável | Descrição |
+|---|---|
+| `GROQ_API_KEY` | Chave de API da Groq |
+| `MODEL_NAME` | Modelo utilizado (padrão: `llama-3.3-70b-versatile`) |
+| `MAX_TOKENS` | Limite de tokens na resposta (padrão: 1000) |
 
-## Usuários de Teste
+## 🚀 Deploy Rápido
 
-| E-mail                  | Senha      | Perfil       |
-|-------------------------|------------|--------------|
-| aluno@senac.br          | senac123   | Aluno        |
-| coordenador@senac.br    | coord123   | Coordenador  |
-| admin@senac.br          | admin123   | Admin        |
+A aplicação é um arquivo HTML estático e pode ser publicada em qualquer serviço de hospedagem estática:
 
-## Rotas da API
+- **Vercel**: arraste a pasta para vercel.com
+- **Netlify**: arraste a pasta para netlify.com
+- **GitHub Pages**: suba para um repositório e ative Pages
 
-| Método | Rota                        | Acesso              | Descrição                        |
-|--------|-----------------------------|---------------------|----------------------------------|
-| POST   | /login                      | Público             | Autenticar usuário               |
-| GET    | /me                         | Autenticado         | Dados do usuário logado          |
-| POST   | /certificados               | Aluno               | Enviar certificado               |
-| GET    | /certificados               | Autenticado         | Listar certificados              |
-| GET    | /certificados/:id/arquivo   | Autenticado         | Visualizar arquivo do certificado|
-| PATCH  | /certificados/:id/status    | Coordenador / Admin | Aprovar ou reprovar              |
-| GET    | /stats                      | Coordenador / Admin | Estatísticas gerais              |
-| GET    | /usuarios                   | Admin               | Listar usuários                  |
-| POST   | /usuarios                   | Admin               | Cadastrar usuário                |
-| DELETE | /usuarios/:id               | Admin               | Excluir usuário                  |
+## 🛠 Tecnologias
 
-## Tecnologias
+- HTML5 / CSS3 / JavaScript (Vanilla)
+- Groq API com modelo LLaMA 3.3 70B Versatile
+- Google Fonts (Syne + DM Sans)
 
-- **Frontend:** HTML, CSS, JavaScript (Vanilla), PWA (Service Worker + Manifest)
-- **Backend:** Node.js, Express, Multer
-- **Armazenamento:** Em memória (adequado para demonstração do PI)
+## 👥 Equipe
 
-## Observações
-
-- Os dados são armazenados em memória; reiniciar o servidor apaga os certificados enviados.
-- O token é baseado em Base64 do e-mail — adequado para PI; em produção use JWT + bcrypt.
-- O Service Worker faz cache das telas estáticas para uso offline.
+Residência em Software & IA — Porto Digital 2026

@@ -1,6 +1,5 @@
 const API = 'http://localhost:3000';
 
-// Proteção de rota
 const token = localStorage.getItem('token');
 if (!token) window.location.href = 'login.html';
 
@@ -61,7 +60,7 @@ async function enviarCertificado() {
     if (resposta.ok) {
       msg.style.color = '#4caf7d';
       msg.textContent = '✓ Certificado enviado com sucesso!';
-      // Limpa o formulário
+
       document.getElementById('nome').value = '';
       document.getElementById('categoria').value = '';
       document.getElementById('horas').value = '';

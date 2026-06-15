@@ -240,6 +240,13 @@ npx serve frontend/
 ---
 
 ## 👥 Equipe
+Hugo Pires
+Isack Otavio
+Israel Soares
+Pedro Lucas
+Rafael Barbosa
+Zaion Kauan
+
 
 **Koda Solution**  
 Projeto Integrador 2026 — SENAC

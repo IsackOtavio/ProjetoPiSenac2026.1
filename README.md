@@ -9,7 +9,7 @@
 
 O **Sistema de Horas Complementares** é uma aplicação web fullstack para gerenciamento de certificados de atividades extracurriculares. Alunos enviam seus certificados, coordenadores validam e aprovam, e administradores gerenciam os usuários da plataforma.
 
-O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instalação no celular como aplicativo nativo.
+O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instalação no celular como aplicativo nativo, e armazenamento de arquivos na nuvem via **Cloudinary**.
 
 ---
 
@@ -29,7 +29,7 @@ O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instala�
 | Perfil | Descrição |
 |---|---|
 | 🎓 Aluno | Envia certificados e acompanha o status de aprovação |
-| 📋 Coordenador | Analisa e valida os certificados enviados pelos alunos |
+| 📋 Coordenador | Analisa e valide os certificados enviados pelos alunos |
 | ⚙️ Administrador | Gerencia usuários do sistema (cadastro e exclusão) |
 
 ---
@@ -55,7 +55,8 @@ O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instala�
 | Express | v5.2.1 | Framework web |
 | PostgreSQL | 18 | Banco de dados |
 | pg (node-postgres) | v8.21.0 | Driver do PostgreSQL |
-| Multer | v2.1.1 | Upload de arquivos |
+| Multer | v2.1.1 | Upload de arquivos (memória) |
+| Cloudinary | v2+ | Armazenamento de arquivos na nuvem |
 | dotenv | v16.4.7 | Variáveis de ambiente |
 | CORS | v2.8.6 | Cross-Origin Resource Sharing |
 
@@ -78,6 +79,7 @@ O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instala�
 | Frontend | Render (Static Site) | Free |
 | Backend API | Render (Web Service) | Free |
 | Banco de Dados | Render (PostgreSQL 18) | Free |
+| Armazenamento de Arquivos | Cloudinary | Free (25 GB) |
 | Repositório | GitHub | Free |
 
 ---
@@ -108,7 +110,7 @@ O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instala�
 | categoria | VARCHAR(50) | Tipo da atividade |
 | horas | INT | Carga horária |
 | descricao | TEXT | Descrição opcional |
-| arquivo | VARCHAR(255) | Nome do arquivo enviado |
+| arquivo | VARCHAR(255) | URL do arquivo no Cloudinary |
 | status | VARCHAR(20) | pendente / aprovado / reprovado |
 | observacao | TEXT | Observação do coordenador |
 | criado_em | TIMESTAMP | Data de envio |
@@ -127,7 +129,7 @@ O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instala�
 | GET | `/certificados` | Lista certificados | Todos |
 | POST | `/certificados` | Envia novo certificado | Aluno |
 | PATCH | `/certificados/:id/status` | Aprova ou reprova | Coordenador/Admin |
-| GET | `/certificados/:id/arquivo` | Visualiza o arquivo | Todos |
+| GET | `/certificados/:id/arquivo` | Redireciona para o arquivo no Cloudinary | Todos |
 | GET | `/stats` | Estatísticas gerais | Admin/Coordenador |
 
 ---
@@ -142,7 +144,7 @@ ProjetoPiSenac2026/
 │   ├── database.sql        # Script de criação do banco
 │   ├── .env                # Variáveis de ambiente (não versionar)
 │   ├── .gitignore
-│   └── uploads/            # Arquivos enviados pelos alunos
+│   └── uploads/            # Pasta temporária de uploads
 │
 ├── frontend/
 │   ├── html/
@@ -174,8 +176,9 @@ ProjetoPiSenac2026/
 
 ### Pré-requisitos
 - Node.js 18+
-- MySQL 8+ ou PostgreSQL 14+
+- PostgreSQL 14+
 - npm
+- Conta no Cloudinary (gratuita)
 
 ### 1. Clonar o repositório
 ```bash
@@ -185,7 +188,7 @@ cd ProjetoPiSenac2026.1
 
 ### 2. Configurar o banco de dados
 ```bash
-mysql -u root -p < backend/database.sql
+psql -U postgres -f backend/database.sql
 ```
 
 ### 3. Criar o arquivo `.env`
@@ -195,11 +198,11 @@ cd backend
 Crie o arquivo `.env`:
 ```env
 PORT=3000
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=senac_pi
+DATABASE_URL=postgresql://usuario:senha@localhost:5432/senac_pi
+NODE_ENV=development
+CLOUDINARY_CLOUD_NAME=seu_cloud_name
+CLOUDINARY_API_KEY=sua_api_key
+CLOUDINARY_API_SECRET=seu_api_secret
 ```
 
 ### 4. Instalar dependências e iniciar
@@ -227,10 +230,11 @@ npx serve frontend/
 
 ## 🔐 Segurança
 
-- Autenticação via token Base64 (JWT em versões futuras)
+- Autenticação via token Base64
 - Rotas protegidas por perfil no backend
 - Arquivos aceitos: PDF, JPG e PNG (máx. 10 MB)
 - Validação de tipo de arquivo no backend (Multer)
+- Arquivos armazenados com segurança no Cloudinary
 - O arquivo `.env` nunca é versionado
 
 ---

@@ -162,8 +162,8 @@ This project was collaboratively developed by the members of the **Koda Solution
 * **Rafael Barbosa** — GitHub
 * **Zaion Kauan** — GitHub
 
-**Academic Advisor / Professor:** Prof. ____________
-**Tech English Course Professor:** Prof. ____________
+
+**Tech English Course Professor:** Prof.Leonardo Trevas
 
 ---
 

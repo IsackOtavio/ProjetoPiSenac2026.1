@@ -1,158 +1,65 @@
-# 🎓 Koda Solution — Sistema de Horas Complementares
+🎓 Koda Solution — Complementary Hours System
+Capstone Project 2026 — SENAC
 
-> Projeto Integrador 2026 — SENAC  
-> Desenvolvido pela equipe **Koda Solution**
+Developed by the Koda Solution team
 
----
+📌 About the Project
+The Complementary Hours System is a fullstack web application for managing extracurricular activity certificates. Students submit their certificates, coordinators validate and approve them, and administrators manage platform users.
+The system includes PWA (Progressive Web App) support, allowing installation on mobile as a native app, and cloud file storage via Cloudinary.
 
-## 📌 Sobre o Projeto
+🌐 Live Access
+EnvironmentURL🖥️ Frontend (Production)https://senac-pi-frontend.onrender.com/html/login.html⚙️ Backend API (Production)https://senac-pi-backend.onrender.com
 
-O **Sistema de Horas Complementares** é uma aplicação web fullstack para gerenciamento de certificados de atividades extracurriculares. Alunos enviam seus certificados, coordenadores validam e aprovam, e administradores gerenciam os usuários da plataforma.
+⚠️ Render's free plan may cause a ~30 second delay on the first access after periods of inactivity.
 
-O sistema conta com suporte a **PWA (Progressive Web App)**, permitindo instalação no celular como aplicativo nativo, e armazenamento de arquivos na nuvem via **Cloudinary**.
 
----
+👥 User Profiles
+ProfileDescription🎓 StudentSubmits certificates and tracks approval status📋 CoordinatorReviews and validates certificates submitted by students⚙️ AdministratorManages system users (registration and deletion)
 
-## 🌐 Acesso ao Sistema
+🔑 Test Credentials
+ProfileE-mailPasswordAdminadmin@senac.bradmin123Coordinatorcoordenador@senac.brcoord123Studentaluno@senac.brsenac123
 
-| Ambiente | URL |
-|---|---|
-| 🖥️ Frontend (Produção) | https://senac-pi-frontend.onrender.com/html/login.html |
-| ⚙️ Backend API (Produção) | https://senac-pi-backend.onrender.com |
+⚠️ Change these passwords before any use in a real environment.
 
-> ⚠️ O plano gratuito do Render pode causar um delay de ~30 segundos no primeiro acesso após períodos de inatividade.
 
----
+🛠️ Tech Stack
+Backend
+TechnologyVersionUsageNode.jsv22+JavaScript runtimeExpressv5.2.1Web frameworkPostgreSQL18Databasepg (node-postgres)v8.21.0PostgreSQL driverMulterv2.1.1File upload (memory)Cloudinaryv2+Cloud file storagedotenvv16.4.7Environment variablesCORSv2.8.6Cross-Origin Resource Sharing
+Frontend
+TechnologyUsageHTML5Page structureCSS3Styling and responsivenessJavaScript (Vanilla)Logic and API consumptionPWAProgressive Web App (installable)Service WorkerCache and offline functionalityWeb App ManifestPWA configuration
 
-## 👥 Perfis de Acesso
+☁️ Hosting & Infrastructure
+ServicePlatformPlanFrontendRender (Static Site)FreeBackend APIRender (Web Service)FreeDatabaseRender (PostgreSQL 18)FreeFile StorageCloudinaryFree (25 GB)RepositoryGitHubFree
 
-| Perfil | Descrição |
-|---|---|
-| 🎓 Aluno | Envia certificados e acompanha o status de aprovação |
-| 📋 Coordenador | Analisa e valide os certificados enviados pelos alunos |
-| ⚙️ Administrador | Gerencia usuários do sistema (cadastro e exclusão) |
+🗄️ Database
+Platform: Render PostgreSQL 18
 
----
+Region: Oregon (US West)
+Table: usuarios
+FieldTypeDescriptionidSERIAL PKUnique identifiernomeVARCHAR(100)Full nameemailVARCHAR(150)E-mail (unique)senhaVARCHAR(255)PasswordperfilVARCHAR(20)aluno / coordenador / admincriado_emTIMESTAMPRegistration date
+Table: certificados
+FieldTypeDescriptionidSERIAL PKUnique identifierusuario_idINT FKReference to usernomeVARCHAR(200)Activity namecategoriaVARCHAR(50)Activity typehorasINTWorkload (hours)descricaoTEXTOptional descriptionarquivoVARCHAR(255)File URL on CloudinarystatusVARCHAR(20)pendente / aprovado / reprovadoobservacaoTEXTCoordinator's notecriado_emTIMESTAMPSubmission date
 
-## 🔑 Credenciais de Teste
+🌐 API Endpoints
+MethodRouteDescriptionAuthPOST/loginUser authenticationPublicGET/meLogged-in user dataAllGET/usuariosList all usersAdminPOST/usuariosRegister new userAdminDELETE/usuarios/:idRemove a userAdminGET/certificadosList certificatesAllPOST/certificadosSubmit new certificateStudentPATCH/certificados/:id/statusApprove or rejectCoordinator/AdminGET/certificados/:id/arquivoRedirect to Cloudinary fileAllGET/statsGeneral statisticsAdmin/Coordinator
 
-| Perfil | E-mail | Senha |
-|---|---|---|
-| Admin | admin@senac.br | admin123 |
-| Coordenador | coordenador@senac.br | coord123 |
-| Aluno | aluno@senac.br | senac123 |
-
-> ⚠️ Altere essas senhas antes de qualquer uso em ambiente real.
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-### Backend
-| Tecnologia | Versão | Uso |
-|---|---|---|
-| Node.js | v22+ | Runtime JavaScript |
-| Express | v5.2.1 | Framework web |
-| PostgreSQL | 18 | Banco de dados |
-| pg (node-postgres) | v8.21.0 | Driver do PostgreSQL |
-| Multer | v2.1.1 | Upload de arquivos (memória) |
-| Cloudinary | v2+ | Armazenamento de arquivos na nuvem |
-| dotenv | v16.4.7 | Variáveis de ambiente |
-| CORS | v2.8.6 | Cross-Origin Resource Sharing |
-
-### Frontend
-| Tecnologia | Uso |
-|---|---|
-| HTML5 | Estrutura das páginas |
-| CSS3 | Estilização e responsividade |
-| JavaScript (Vanilla) | Lógica e consumo da API |
-| PWA | Progressive Web App (instalável) |
-| Service Worker | Cache e funcionamento offline |
-| Web App Manifest | Configuração do PWA |
-
----
-
-## ☁️ Hospedagem e Infraestrutura
-
-| Serviço | Plataforma | Plano |
-|---|---|---|
-| Frontend | Render (Static Site) | Free |
-| Backend API | Render (Web Service) | Free |
-| Banco de Dados | Render (PostgreSQL 18) | Free |
-| Armazenamento de Arquivos | Cloudinary | Free (25 GB) |
-| Repositório | GitHub | Free |
-
----
-
-## 🗄️ Banco de Dados
-
-**Plataforma:** Render PostgreSQL 18  
-**Região:** Oregon (US West)
-
-### Tabelas
-
-**`usuarios`**
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | SERIAL PK | Identificador único |
-| nome | VARCHAR(100) | Nome completo |
-| email | VARCHAR(150) | E-mail (único) |
-| senha | VARCHAR(255) | Senha de acesso |
-| perfil | VARCHAR(20) | aluno / coordenador / admin |
-| criado_em | TIMESTAMP | Data de cadastro |
-
-**`certificados`**
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | SERIAL PK | Identificador único |
-| usuario_id | INT FK | Referência ao usuário |
-| nome | VARCHAR(200) | Nome da atividade |
-| categoria | VARCHAR(50) | Tipo da atividade |
-| horas | INT | Carga horária |
-| descricao | TEXT | Descrição opcional |
-| arquivo | VARCHAR(255) | URL do arquivo no Cloudinary |
-| status | VARCHAR(20) | pendente / aprovado / reprovado |
-| observacao | TEXT | Observação do coordenador |
-| criado_em | TIMESTAMP | Data de envio |
-
----
-
-## 🌐 Endpoints da API
-
-| Método | Rota | Descrição | Autenticação |
-|---|---|---|---|
-| POST | `/login` | Autenticação de usuário | Não |
-| GET | `/me` | Dados do usuário logado | Todos |
-| GET | `/usuarios` | Lista todos os usuários | Admin |
-| POST | `/usuarios` | Cadastra novo usuário | Admin |
-| DELETE | `/usuarios/:id` | Remove um usuário | Admin |
-| GET | `/certificados` | Lista certificados | Todos |
-| POST | `/certificados` | Envia novo certificado | Aluno |
-| PATCH | `/certificados/:id/status` | Aprova ou reprova | Coordenador/Admin |
-| GET | `/certificados/:id/arquivo` | Redireciona para o arquivo no Cloudinary | Todos |
-| GET | `/stats` | Estatísticas gerais | Admin/Coordenador |
-
----
-
-## 🗂️ Estrutura do Projeto
-
-```
+🗂️ Project Structure
 ProjetoPiSenac2026/
 ├── backend/
-│   ├── server.js           # Servidor principal e rotas da API
-│   ├── package.json        # Dependências do backend
-│   ├── database.sql        # Script de criação do banco
-│   ├── .env                # Variáveis de ambiente (não versionar)
+│   ├── server.js           # Main server and API routes
+│   ├── package.json        # Backend dependencies
+│   ├── database.sql        # Database creation script
+│   ├── .env                # Environment variables (do not commit)
 │   ├── .gitignore
-│   └── uploads/            # Pasta temporária de uploads
+│   └── uploads/            # Temporary upload folder
 │
 ├── frontend/
 │   ├── html/
-│   │   ├── login.html          # Tela de login (todos os perfis)
-│   │   ├── certificados.html   # Meus certificados (aluno)
-│   │   ├── enviar.html         # Enviar certificado (aluno)
-│   │   ├── coordenador.html    # Painel de validação (coordenador)
-│   │   └── admin.html          # Painel administrativo (admin)
+│   │   ├── login.html          # Login screen (all profiles)
+│   │   ├── certificados.html   # My certificates (student)
+│   │   ├── enviar.html         # Submit certificate (student)
+│   │   ├── coordenador.html    # Validation panel (coordinator)
+│   │   └── admin.html          # Admin panel (administrator)
 │   ├── css/
 │   │   ├── global.css
 │   │   ├── login.css
@@ -164,90 +71,64 @@ ProjetoPiSenac2026/
 │   │   ├── enviar.js
 │   │   ├── coordenador.js
 │   │   └── admin.js
-│   ├── manifest.json       # Configuração do PWA
+│   ├── manifest.json       # PWA configuration
 │   └── sw.js               # Service Worker
 │
 └── README.md
-```
 
----
+⚙️ Running Locally
+Prerequisites
 
-## ⚙️ Como Rodar Localmente
+Node.js 18+
+PostgreSQL 14+
+npm
+Cloudinary account (free)
 
-### Pré-requisitos
-- Node.js 18+
-- PostgreSQL 14+
-- npm
-- Conta no Cloudinary (gratuita)
-
-### 1. Clonar o repositório
-```bash
+1. Clone the repository
 git clone https://github.com/hugopires2k/ProjetoPiSenac2026.1.git
 cd ProjetoPiSenac2026.1
-```
-
-### 2. Configurar o banco de dados
-```bash
+2. Set up the database
 psql -U postgres -f backend/database.sql
-```
-
-### 3. Criar o arquivo `.env`
-```bash
-cd backend
-```
-Crie o arquivo `.env`:
-```env
+3. Create the .env file
 PORT=3000
-DATABASE_URL=postgresql://usuario:senha@localhost:5432/senac_pi
+DATABASE_URL=postgresql://user:password@localhost:5432/senac_pi
 NODE_ENV=development
-CLOUDINARY_CLOUD_NAME=seu_cloud_name
-CLOUDINARY_API_KEY=sua_api_key
-CLOUDINARY_API_SECRET=seu_api_secret
-```
-
-### 4. Instalar dependências e iniciar
-```bash
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+4. Install dependencies and start
 npm install
 npm start
-```
-
-### 5. Abrir o frontend
-Abra o arquivo `frontend/html/login.html` no navegador ou use um servidor local:
-```bash
+5. Open the frontend
+Open frontend/html/login.html in your browser, or use a local server:
 npx serve frontend/
-```
 
----
+📱 PWA — Mobile Installation
 
-## 📱 PWA — Instalação no Celular
-
-1. Acesse a tela de login pelo navegador do celular
-2. **Android:** toque em "Adicionar à tela inicial"
-3. **iOS:** toque em "Compartilhar → Adicionar à Tela de Início"
-4. O app será instalado com ícone e tela cheia
-
----
-
-## 🔐 Segurança
-
-- Autenticação via token Base64
-- Rotas protegidas por perfil no backend
-- Arquivos aceitos: PDF, JPG e PNG (máx. 10 MB)
-- Validação de tipo de arquivo no backend (Multer)
-- Arquivos armazenados com segurança no Cloudinary
-- O arquivo `.env` nunca é versionado
-
----
-
-## 👥 Equipe
-
-- Hugo Pires
-- Isack Otavio
-- Israel Soares
-- Pedro Lucas
-- Rafael Barbosa
-- Zaion Kauan
+Access the login screen from your mobile browser
+Android: tap "Add to Home Screen"
+iOS: tap "Share → Add to Home Screen"
+The app will be installed with an icon and fullscreen mode
 
 
-**Koda Solution**  
-Projeto Integrador 2026 — SENAC
+🔐 Security
+
+Authentication via Base64 token
+Routes protected by profile on the backend
+Accepted file types: PDF, JPG and PNG (max. 10 MB)
+File type validation on the backend (Multer)
+Files securely stored on Cloudinary
+The .env file is never committed
+
+
+👥 Team
+
+Hugo Pires
+Isack Otavio
+Israel Soares
+Pedro Lucas
+Rafael Barbosa
+Zaion Kauan
+
+
+Koda Solution — Capstone Project 2026 · SENAC

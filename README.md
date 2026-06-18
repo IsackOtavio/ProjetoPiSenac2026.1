@@ -131,4 +131,6 @@ Rafael Barbosa
 Zaion Kauan
 
 
+teacher: Leonardo Trevas
+
 Koda Solution — Capstone Project 2026 · SENAC
